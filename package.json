@@ -1,0 +1,20 @@
+{
+  "name": "inventory-erp",
+  "version": "1.0.0",
+  "description": "SAP-like ERP System - Single Port (5000)",
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && npm run dev",
+    "dev": "cd frontend && npm install --force && npm run build && cd ../backend && npm run dev",
+    "setup": "npm run install:all && npm run build",
+    "install:frontend": "cd frontend && npm install",
+    "dev:simple": "cd backend && npm run dev",
+    "dev:backend-only": "cd backend && npm run dev",
+    "dev:full": "npm run build && cd backend && npm run dev",
+    "start:all": "npm run dev:full"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
