@@ -120,10 +120,28 @@ body,
   font-size: 15px;
   color: #111827;
   background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .text-input.password-input {
   padding-right: 56px;
+}
+
+/* Hide browser's native password visibility toggle */
+.text-input::-webkit-outer-spin-button,
+.text-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.text-input::-ms-reveal {
+  display: none;
+}
+
+.text-input::-webkit-credentials-auto-fill-button {
+  display: none !important;
 }
 
 .text-input::placeholder {

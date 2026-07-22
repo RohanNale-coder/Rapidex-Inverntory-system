@@ -1,72 +1,113 @@
 import React from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import { 
-  Box, Typography, Grid, Paper, CircularProgress, Card, CardContent 
-} from '@mui/material';
-import { 
-  TrendingUp, AttachMoney, ShoppingCart, Inventory, 
-  People, ShoppingBasket 
-} from '@mui/icons-material';
+import { useTheme } from '../../context/ThemeContext';
+import './Dashboard.css';
 
 const Dashboard = () => {
+  const { theme } = useTheme();
+  
   const { data: statsData, isLoading: statsLoading } = useQuery('dashboardStats', async () => {
     const response = await axios.get('/dashboard/stats');
     return response.data.stats;
   });
-
-  const isLoading = statsLoading;
 
   const statCards = [
     {
       title: 'Total Sales',
       value: statsData?.totalSales || 0,
       subtitle: 'Invoices',
-      icon: <ShoppingCart sx={{ fontSize: 40 }} />,
-      color: '#1976d2',
+      icon: 'shopping-cart',
+      color: '#2563eb',
       format: 'number'
     },
     {
-      title: 'Total Revenue',
+      title: 'Revenue',
       value: statsData?.totalRevenue || 0,
       subtitle: 'Sales Income',
-      icon: <AttachMoney sx={{ fontSize: 40 }} />,
-      color: '#2e7d32',
+      icon: 'dollar-sign',
+      color: '#16a34a',
       format: 'currency'
     },
     {
-      title: 'Total Profit',
+      title: 'Profit',
       value: statsData?.totalProfit || 0,
       subtitle: 'Revenue - Cost',
-      icon: <TrendingUp sx={{ fontSize: 40 }} />,
-      color: '#ed6c02',
+      icon: 'trending-up',
+      color: '#f59e0b',
       format: 'currency'
     },
     {
-      title: 'Total Cost',
+      title: 'Cost',
       value: statsData?.totalCost || 0,
       subtitle: 'Purchase Cost',
-      icon: <ShoppingBasket sx={{ fontSize: 40 }} />,
-      color: '#d32f2f',
+      icon: 'package',
+      color: '#dc2626',
       format: 'currency'
     },
     {
-      title: 'Total Products',
+      title: 'Products',
       value: statsData?.totalProducts || 0,
       subtitle: 'Active Products',
-      icon: <Inventory sx={{ fontSize: 40 }} />,
-      color: '#9c27b0',
+      icon: 'box',
+      color: '#a855f7',
       format: 'number'
     },
     {
-      title: 'Total Customers',
+      title: 'Customers',
       value: statsData?.totalCustomers || 0,
       subtitle: 'Active Customers',
-      icon: <People sx={{ fontSize: 40 }} />,
-      color: '#00796b',
+      icon: 'users',
+      color: '#0891b2',
       format: 'number'
     }
   ];
+
+  const getIcon = (name: string) => {
+    const icons: Record<string, JSX.Element> = {
+      'shopping-cart': (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+      ),
+      'dollar-sign': (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <line x1="12" y1="1" x2="12" y2="23"></line>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+      ),
+      'trending-up': (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 17"></polyline>
+          <polyline points="17 6 23 6 23 12"></polyline>
+        </svg>
+      ),
+      'package': (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+        </svg>
+      ),
+      'box': (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+      ),
+      'users': (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      )
+    };
+    return icons[name] || null;
+  };
 
   const formatValue = (value: number, format: string) => {
     if (format === 'currency') {
@@ -76,53 +117,36 @@ const Dashboard = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
-        Dashboard
-      </Typography>
-      
-      {isLoading ? (
-        <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
-          <CircularProgress />
-        </Box>
+    <div className="dashboard-container">
+      <div className="dashboard-header">
+        <h1 className="dashboard-title">Dashboard</h1>
+        <p className="dashboard-subtitle">Welcome back! Here's an overview of your business.</p>
+      </div>
+
+      {statsLoading ? (
+        <div className="dashboard-loading">
+          <div className="loading-spinner"></div>
+          <p>Loading data...</p>
+        </div>
       ) : (
-        <Grid container spacing={3}>
+        <div className="dashboard-grid">
           {statCards.map((card, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card 
-                elevation={3} 
-                sx={{ 
-                  backgroundColor: card.color, 
-                  color: 'white',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 6
-                  }
-                }}
-              >
-                <CardContent>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <Box>
-                      <Typography variant="subtitle2" sx={{ opacity: 0.9, mb: 1 }}>
-                        {card.title}
-                      </Typography>
-                      <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-                        {formatValue(card.value, card.format)}
-                      </Typography>
-                      <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                        {card.subtitle}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ opacity: 0.8 }}>
-                      {card.icon}
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
+            <div key={index} className="stat-card">
+              <div className="stat-card-header">
+                <div className="stat-icon-container" style={{ '--icon-color': card.color } as any}>
+                  {getIcon(card.icon)}
+                </div>
+                <div className="stat-info">
+                  <p className="stat-title">{card.title}</p>
+                  <p className="stat-subtitle">{card.subtitle}</p>
+                </div>
+              </div>
+              <div className="stat-value">
+                {formatValue(card.value, card.format)}
+              </div>
+            </div>
           ))}
-        </Grid>
+        </div>
       )}
     </div>
   );

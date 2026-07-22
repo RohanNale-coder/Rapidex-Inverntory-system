@@ -1,6 +1,9 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+type Theme = 'light' | 'dark';
 
 interface ThemeContextType {
+  theme: Theme;
   darkMode: boolean;
   toggleTheme: () => void;
 }
@@ -8,14 +11,23 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [darkMode, setDarkMode] = useState(false);
+  const [theme, setTheme] = useState<Theme>(() => {
+    const saved = localStorage.getItem('theme') as Theme | null;
+    return saved || 'light';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+    const root = document.documentElement;
+    root.setAttribute('data-theme', theme);
+  }, [theme]);
 
   const toggleTheme = () => {
-    setDarkMode(!darkMode);
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
   return (
-    <ThemeContext.Provider value={{ darkMode, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, darkMode: theme === 'dark', toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
