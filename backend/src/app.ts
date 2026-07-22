@@ -56,11 +56,11 @@ app.get('/health', (req, res) => {
 });
 
 // Serve React frontend (if build exists)
-app.use(express.static('../frontend/build'));
+app.use(express.static(path.join(__dirname, '../../frontend/build')));
 
 // Serve simple HTML page for root route
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+  res.sendFile(path.join(__dirname, '../../frontend/build/index.html'));
 });
 
 // API Routes
@@ -83,7 +83,7 @@ app.use('/api/dashboard', dashboardRoutes);
 
 // Serve React app for all non-API routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+  res.sendFile(path.join(__dirname, '../../frontend/build/index.html'));
 });
 
 // Error handler
